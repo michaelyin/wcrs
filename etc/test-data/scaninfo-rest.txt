@@ -1,0 +1,1 @@
+curl -H "Content-Type: application/json;charset=UTF-8" -X POST -d '{"publicId":90,"userId":99, "content":""}' http://localhost:8080/barcode
