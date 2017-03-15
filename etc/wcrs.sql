@@ -2,7 +2,6 @@
 create database wcrs;
 use wcrs;
 
-DROP TABLE IF EXISTS account;
 ###############################################################
 ##1.  start from mysql 5.5, innodb is the default storage enginer
 ##2.  use unsigned
