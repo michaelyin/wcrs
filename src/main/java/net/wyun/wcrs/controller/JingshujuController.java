@@ -29,7 +29,7 @@ public class JingshujuController {
 	@Autowired
 	UserRepository userRepo;
 	
-	@RequestMapping(value= "/wechat", method=RequestMethod.POST)
+	@RequestMapping(value= "/jsj", method=RequestMethod.POST)
 	String saveUser(@RequestBody JSJFormInfo data){
 		logger.info("jingshuju data: " + data.getFormName() + data.getEntry());
 		return data.getForm();
