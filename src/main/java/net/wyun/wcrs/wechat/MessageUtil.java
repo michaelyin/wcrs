@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
@@ -25,6 +27,8 @@ import net.wyun.wcrs.wechat.message.resp.NewsMessage;
 import net.wyun.wcrs.wechat.message.resp.RespTextMessage;
 
 public class MessageUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MessageUtil.class);
 	// 请求消息类型：文本
 	public static final String REQ_MESSAGE_TYPE_TEXT = "text";
 	// 请求消息类型：图片
@@ -84,8 +88,11 @@ public static Map<String, String> parseXml(HttpServletRequest request) throws Ex
 	List<Element> elementList = root.elements();
 
 	// 遍历所有子节点
-	for (Element e : elementList)
+	for (Element e : elementList){
+		logger.debug(e.getName() + " : " + e.getText());
 		map.put(e.getName(), e.getText());
+	}
+		
 
 	// 释放资源
 	inputStream.close();
