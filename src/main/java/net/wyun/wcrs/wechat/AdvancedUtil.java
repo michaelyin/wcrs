@@ -21,7 +21,7 @@ import net.wyun.wcrs.wechat.po.WeixinUserInfo;
 import net.wyun.wcrs.wechat.po.WeixinUserList;
 
 /**
- * �߼��ӿڹ�����
+ * 高级接口工具类
  * 
  * @author qikuo
  * @date 2017-2-28
@@ -29,25 +29,25 @@ import net.wyun.wcrs.wechat.po.WeixinUserList;
 public class AdvancedUtil {
 	private static Logger log = LoggerFactory.getLogger(AdvancedUtil.class);
 	/**
-	 * ��װ�ı��ͷ���Ϣ
+	 * 组装文本客服消息
 	 * 
-	 * @param openId ��Ϣ���Ͷ���
-	 * @param content �ı���Ϣ����
+	 * @param openId 消息发送对象
+	 * @param content 文本消息内容
 	 * @return
 	 */
 	public static String makeTextCustomMessage(String openId, String content) {
-		// ����Ϣ�����е�˫���Ž���ת��
+		// 对消息内容中的双引号进行转义
 		content = content.replace("\"", "\\\"");
 		String jsonMsg = "{\"touser\":\"%s\",\"msgtype\":\"text\",\"text\":{\"content\":\"%s\"}}";
 		return String.format(jsonMsg, openId, content);
 	}
 	public static boolean sendCustomMessage(String accessToken, String jsonMsg) {
-		log.info("��Ϣ���ݣ�{}", jsonMsg);
+		log.info("消息内容：{}", jsonMsg);
 		boolean result = false;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
-		// ���Ϳͷ���Ϣ
+		// 发送客服消息
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "POST", jsonMsg);
 
 		if (null != jsonObject) {
@@ -55,30 +55,30 @@ public class AdvancedUtil {
 			String errorMsg = jsonObject.getString("errmsg");
 			if (0 == errorCode) {
 				result = true;
-				log.info("�ͷ���Ϣ���ͳɹ� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.info("客服消息发送成功 errcode:{} errmsg:{}", errorCode, errorMsg);
 			} else {
-				log.error("�ͷ���Ϣ����ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("客服消息发送失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 
 		return result;
 	}
 	/**
-	 * ������ʱ���ζ�ά��
+	 * 创建临时带参二维码
 	 * 
-	 * @param accessToken �ӿڷ���ƾ֤
-	 * @param expireSeconds ��ά����Чʱ�䣬��λΪ�룬��󲻳���1800
-	 * @param sceneId ����ID
+	 * @param accessToken 接口访问凭证
+	 * @param expireSeconds 二维码有效时间，单位为秒，最大不超过1800
+	 * @param sceneId 场景ID
 	 * @return WeixinQRCode
 	 */
 	public static WeixinQRCode createTemporaryQRCode(String accessToken, int expireSeconds, int sceneId) {
 		WeixinQRCode weixinQRCode = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
-		// ��Ҫ�ύ��json����
+		// 需要提交的json数据
 		String jsonMsg = "{\"expire_seconds\": %d, \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": %d}}}";
-		// ������ʱ���ζ�ά��
+		// 创建临时带参二维码
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "POST", String.format(jsonMsg, expireSeconds, sceneId));
 
 		if (null != jsonObject) {
@@ -86,59 +86,59 @@ public class AdvancedUtil {
 				weixinQRCode = new WeixinQRCode();
 				weixinQRCode.setTicket(jsonObject.getString("ticket"));
 				weixinQRCode.setExpireSeconds(jsonObject.getInt("expire_seconds"));
-				//log.info("������ʱ���ζ�ά��ɹ� ticket:{} expire_seconds:{}", weixinQRCode.getTicket(), weixinQRCode.getExpireSeconds());
+				//log.info("创建临时带参二维码成功 ticket:{} expire_seconds:{}", weixinQRCode.getTicket(), weixinQRCode.getExpireSeconds());
 			} catch (Exception e) {
 				weixinQRCode = null;
 //				int errorCode = jsonObject.getInt("errcode");
 //				String errorMsg = jsonObject.getString("errmsg");
-				//log.error("������ʱ���ζ�ά��ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				//log.error("创建临时带参二维码失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 		return weixinQRCode;
 	}
 
 	/**
-	 * �������ô��ζ�ά��
+	 * 创建永久带参二维码
 	 * 
-	 * @param accessToken �ӿڷ���ƾ֤
-	 * @param sceneId ����ID
+	 * @param accessToken 接口访问凭证
+	 * @param sceneId 场景ID
 	 * @return ticket
 	 */
 	public static String createPermanentQRCode(String accessToken, int sceneId) {
 		String ticket = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
-		// ��Ҫ�ύ��json����
+		// 需要提交的json数据
 		String jsonMsg = "{\"action_name\": \"QR_LIMIT_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": %d}}}";
-		// �������ô��ζ�ά��
+		// 创建永久带参二维码
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "POST", String.format(jsonMsg, sceneId));
 
 		if (null != jsonObject) {
 			try {
 				ticket = jsonObject.getString("ticket");
 		
-				log.info("�������ô��ζ�ά��ɹ� ticket:{}", ticket);
+				log.info("创建永久带参二维码成功 ticket:{}", ticket);
 				
 				
 			} catch (Exception e) {
 				int errorCode = jsonObject.getInt("errcode");
 				String errorMsg = jsonObject.getString("errmsg");
-				log.error("�������ô��ζ�ά��ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("创建永久带参二维码失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 		return ticket;
 	}
 
 	/**
-	 * ����ticket��ȡ��ά��
+	 * 根据ticket换取二维码
 	 * 
-	 * @param ticket ��ά��ticket
-	 * @param savePath ����·��
+	 * @param ticket 二维码ticket
+	 * @param savePath 保存路径
 	 */
 	public static String getQRCode(String ticket, String savePath) {
 		String filePath = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
 		requestUrl = requestUrl.replace("TICKET", CommonUtil.urlEncodeUTF8(ticket));
 		try {
@@ -150,10 +150,10 @@ public class AdvancedUtil {
 			if (!savePath.endsWith("/")) {
 				savePath += "/";
 			}
-			// ��ticket��Ϊ�ļ���
+			// 将ticket作为文件名
 			filePath = savePath + ticket + ".jpg";
 
-			// ��΢�ŷ��������ص�������д���ļ�
+			// 将微信服务器返回的输入流写入文件
 			BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
 			FileOutputStream fos = new FileOutputStream(new File(filePath));
 			byte[] buf = new byte[8096];
@@ -164,58 +164,58 @@ public class AdvancedUtil {
 			bis.close();
 
 			conn.disconnect();
-			log.info("����ticket��ȡ��ά��ɹ���filePath=" + filePath);
+			log.info("根据ticket换取二维码成功，filePath=" + filePath);
 		} catch (Exception e) {
 			filePath = null;
-			log.error("����ticket��ȡ��ά��ʧ�ܣ�{}", e);
+			log.error("根据ticket换取二维码失败：{}", e);
 		}
 		return filePath;
 	}
 	/**
-	 * ��ȡ�û���Ϣ
+	 * 获取用户信息
 	 * 
-	 * @param accessToken �ӿڷ���ƾ֤
-	 * @param openId �û���ʶ
+	 * @param accessToken 接口访问凭证
+	 * @param openId 用户标识
 	 * @return WeixinUserInfo
 	 */
 	public static WeixinUserInfo getUserInfo(String accessToken, String openId) {
 		WeixinUserInfo weixinUserInfo = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
-		// ��ȡ�û���Ϣ
+		// 获取用户信息
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "GET", null);
 
 		if (null != jsonObject) {
 			try {
 				weixinUserInfo = new WeixinUserInfo();
-				// �û��ı�ʶ
+				// 用户的标识
 				weixinUserInfo.setOpenId(jsonObject.getString("openid"));
-				// ��ע״̬��1�ǹ�ע��0��δ��ע����δ��עʱ��ȡ����������Ϣ
+				// 关注状态（1是关注，0是未关注），未关注时获取不到其余信息
 				weixinUserInfo.setSubscribe(jsonObject.getInt("subscribe"));
-				// �û���עʱ��
+				// 用户关注时间
 				weixinUserInfo.setSubscribeTime(jsonObject.getString("subscribe_time"));
-				// �ǳ�
+				// 昵称
 				weixinUserInfo.setNickname(jsonObject.getString("nickname"));
-				// �û����Ա�1�����ԣ�2��Ů�ԣ�0��δ֪��
+				// 用户的性别（1是男性，2是女性，0是未知）
 				weixinUserInfo.setSex(jsonObject.getInt("sex"));
-				// �û����ڹ���
+				// 用户所在国家
 				weixinUserInfo.setCountry(jsonObject.getString("country"));
-				// �û�����ʡ��
+				// 用户所在省份
 				weixinUserInfo.setProvince(jsonObject.getString("province"));
-				// �û����ڳ���
+				// 用户所在城市
 				weixinUserInfo.setCity(jsonObject.getString("city"));
-				// �û������ԣ���������Ϊzh_CN
+				// 用户的语言，简体中文为zh_CN
 				weixinUserInfo.setLanguage(jsonObject.getString("language"));
-				// �û�ͷ��
+				// 用户头像
 				weixinUserInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
 			} catch (Exception e) {
 				if (0 == weixinUserInfo.getSubscribe()) {
-					log.error("�û�{}��ȡ����ע", weixinUserInfo.getOpenId());
+					log.error("用户{}已取消关注", weixinUserInfo.getOpenId());
 				} else {
 					int errorCode = jsonObject.getInt("errcode");
 					String errorMsg = jsonObject.getString("errmsg");
-					log.error("��ȡ�û���Ϣʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+					log.error("获取用户信息失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 				}
 			}
 		}
@@ -223,10 +223,10 @@ public class AdvancedUtil {
 	}
 
 	/**
-	 * ��ȡ��ע���б�
+	 * 获取关注者列表
 	 * 
-	 * @param accessToken ���ýӿ�ƾ֤
-	 * @param nextOpenId ��һ����ȡ��openId������Ĭ�ϴ�ͷ��ʼ��ȡ
+	 * @param accessToken 调用接口凭证
+	 * @param nextOpenId 第一个拉取的openId，不填默认从头开始拉取
 	 * @return WeixinUserList
 	 */
 	@SuppressWarnings( { "unchecked", "deprecation" })
@@ -236,12 +236,12 @@ public class AdvancedUtil {
 		if (null == nextOpenId)
 			nextOpenId = "";
 
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken).replace("NEXT_OPENID", nextOpenId);
-		// ��ȡ��ע���б�
+		// 获取关注者列表
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "GET", null);
-		// �������ɹ�
+		// 如果请求成功
 		if (null != jsonObject) {
 			try {
 				weixinUserList = new WeixinUserList();
@@ -254,19 +254,19 @@ public class AdvancedUtil {
 				weixinUserList = null;
 				int errorCode = jsonObject.getInt("errcode");
 				String errorMsg = jsonObject.getString("errmsg");
-				log.error("��ȡ��ע���б�ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("获取关注者列表失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 		return weixinUserList;
 	}
-	//��ӿͷ��˺�
+	//添加客服账号
 	public static boolean setCustomerid(String accessToken, String kf_account,String nickname,String password) {
 		boolean result = false;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=ACCESS_TOKEN";
 		String jsonMsg = "{\"kf_account\":\"%s\",\"nickname\":\"%s\",\"password\":\"%s\"}";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
-		// ���Ϳͷ���Ϣ
+		// 发送客服消息
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "POST", String.format(jsonMsg, kf_account,nickname,password));
 
 		if (null != jsonObject) {
@@ -274,30 +274,30 @@ public class AdvancedUtil {
 			String errorMsg = jsonObject.getString("errmsg");
 			if (0 == errorCode) {
 				result = true;
-				log.info("�ͷ���Ϣ�����ɹ� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.info("客服信息创建成功 errcode:{} errmsg:{}", errorCode, errorMsg);
 			} else {
-				log.error("�ͷ���Ϣ����ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("客服消息创建失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 
 		return result;
 	}
 	/**
-	 * ��ȡ��ҳ��Ȩƾ֤
+	 * 获取网页授权凭证
 	 * 
-	 * @param appId �����˺ŵ�Ψһ��ʶ
-	 * @param appSecret �����˺ŵ���Կ
+	 * @param appId 公众账号的唯一标识
+	 * @param appSecret 公众账号的密钥
 	 * @param code
 	 * @return WeixinAouth2Token
 	 */
 	public static WeixinOauth2Token getOauth2AccessToken(String appId, String appSecret, String code) {
 		WeixinOauth2Token wat = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
 		requestUrl = requestUrl.replace("APPID", appId);
 		requestUrl = requestUrl.replace("SECRET", appSecret);
 		requestUrl = requestUrl.replace("CODE", code);
-		// ��ȡ��ҳ��Ȩƾ֤
+		// 获取网页授权凭证
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "GET", null);
 		if (null != jsonObject) {
 			try {
@@ -311,26 +311,26 @@ public class AdvancedUtil {
 				wat = null;
 				int errorCode = jsonObject.getInt("errcode");
 				String errorMsg = jsonObject.getString("errmsg");
-				log.error("��ȡ��ҳ��Ȩƾ֤ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("获取网页授权凭证失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 		return wat;
 	}
 
 	/**
-	 * ˢ����ҳ��Ȩƾ֤
+	 * 刷新网页授权凭证
 	 * 
-	 * @param appId �����˺ŵ�Ψһ��ʶ
+	 * @param appId 公众账号的唯一标识
 	 * @param refreshToken
 	 * @return WeixinAouth2Token
 	 */
 	public static WeixinOauth2Token refreshOauth2AccessToken(String appId, String refreshToken) {
 		WeixinOauth2Token wat = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN";
 		requestUrl = requestUrl.replace("APPID", appId);
 		requestUrl = requestUrl.replace("REFRESH_TOKEN", refreshToken);
-		// ˢ����ҳ��Ȩƾ֤
+		// 刷新网页授权凭证
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "GET", null);
 		if (null != jsonObject) {
 			try {
@@ -344,51 +344,51 @@ public class AdvancedUtil {
 				wat = null;
 				int errorCode = jsonObject.getInt("errcode");
 				String errorMsg = jsonObject.getString("errmsg");
-				log.error("ˢ����ҳ��Ȩƾ֤ʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("刷新网页授权凭证失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 		return wat;
 	}
 	/**
-	 * ͨ����ҳ��Ȩ��ȡ�û���Ϣ
+	 * 通过网页授权获取用户信息
 	 * 
-	 * @param accessToken ��ҳ��Ȩ�ӿڵ���ƾ֤
-	 * @param openId �û���ʶ
+	 * @param accessToken 网页授权接口调用凭证
+	 * @param openId 用户标识
 	 * @return SNSUserInfo
 	 */
 	@SuppressWarnings( { "deprecation", "unchecked" })
 	public static SNSUserInfo getSNSUserInfo(String accessToken, String openId) {
 		SNSUserInfo snsUserInfo = null;
-		// ƴ�������ַ
+		// 拼接请求地址
 		String requestUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID";
 		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
-		// ͨ����ҳ��Ȩ��ȡ�û���Ϣ
+		// 通过网页授权获取用户信息
 		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "GET", null);
 
 		if (null != jsonObject) {
 			try {
 				snsUserInfo = new SNSUserInfo();
-				// �û��ı�ʶ
+				// 用户的标识
 				snsUserInfo.setOpenId(jsonObject.getString("openid"));
-				// �ǳ�
+				// 昵称
 				snsUserInfo.setNickname(jsonObject.getString("nickname"));
-				// �Ա�1�����ԣ�2��Ů�ԣ�0��δ֪��
+				// 性别（1是男性，2是女性，0是未知）
 				snsUserInfo.setSex(jsonObject.getInt("sex"));
-				// �û����ڹ���
+				// 用户所在国家
 				snsUserInfo.setCountry(jsonObject.getString("country"));
-				// �û�����ʡ��
+				// 用户所在省份
 				snsUserInfo.setProvince(jsonObject.getString("province"));
-				// �û����ڳ���
+				// 用户所在城市
 				snsUserInfo.setCity(jsonObject.getString("city"));
-				// �û�ͷ��
+				// 用户头像
 				snsUserInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
-				// �û���Ȩ��Ϣ
+				// 用户特权信息
 				snsUserInfo.setPrivilegeList(JSONArray.toList(jsonObject.getJSONArray("privilege"), List.class));
 			} catch (Exception e) {
 				snsUserInfo = null;
 				int errorCode = jsonObject.getInt("errcode");
 				String errorMsg = jsonObject.getString("errmsg");
-				log.error("��ȡ�û���Ϣʧ�� errcode:{} errmsg:{}", errorCode, errorMsg);
+				log.error("获取用户信息失败 errcode:{} errmsg:{}", errorCode, errorMsg);
 			}
 		}
 		return snsUserInfo;
