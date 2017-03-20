@@ -32,6 +32,11 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile "mysql:mysql-connector-java"
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    // https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream
+    compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.2'
+    compile 'net.sf.json-lib:json-lib:2.4:jdk15'
+    
+    
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testCompile('org.springframework.boot:spring-boot-starter-test') 
     testCompile 'org.assertj:assertj-core:3.1.0'
