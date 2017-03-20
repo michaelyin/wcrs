@@ -123,9 +123,9 @@ public class WechatController {
 							session.setAttribute("openID", openid);
 							//request.getRequestDispatcher("/insertServlet").forward(request, null);
 							//System.out.println(session.getAttribute("openID"));
-							logger.info(openid);
-							//System.out.println("eventKey"+eventKey);
-							logger.info(eventKey.substring(eventKey.length()-1));
+							//logger.info("openid: " + openid);
+							logger.info("eventKey: "+eventKey);
+							//logger.info(eventKey.substring(eventKey.length()-1));
 							//获取用户openid等相关信息写入数据库
 							//QRCodeEvent qrCodeEvent = DaoFactory.getPersonDaoInstance().insertByopenid(baseEvent);
 //							QRCodeEvent qrCodeEvent = DaoFactory.getPersonDaoInstance().selectByopenid(baseEvent);
