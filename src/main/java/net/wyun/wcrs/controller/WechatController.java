@@ -123,7 +123,7 @@ public class WechatController {
 							session.setAttribute("openID", openid);
 							//request.getRequestDispatcher("/insertServlet").forward(request, null);
 							//System.out.println(session.getAttribute("openID"));
-							//logger.info("openid: " + openid);
+							logger.info("openid: " + openid);
 							logger.info("eventKey: "+eventKey);
 							//logger.info(eventKey.substring(eventKey.length()-1));
 							//获取用户openid等相关信息写入数据库

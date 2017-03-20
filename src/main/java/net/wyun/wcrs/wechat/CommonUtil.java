@@ -29,8 +29,8 @@ import net.wyun.wcrs.wechat.po.Token;
  */
 public class CommonUtil {
 	private static Logger log = LoggerFactory.getLogger(CommonUtil.class);
-	public static final String APPID = "wx179e17d128a005d0";
-	public static final String APPSECRET ="64001733208cf2e39a1a1c9d6c14d52a";
+	public static final String APPID = "wx479cc0c5b93538df";
+	public static final String APPSECRET ="9cef9bc43e6ab4a2feedbfd3bf5b1dff";
 	
 	// ƾ֤��ȡ��GET��
 	public final static String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
