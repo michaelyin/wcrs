@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -395,88 +393,5 @@ public class AdvancedUtil {
 		}
 		return snsUserInfo;
 	}
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String APPID = CommonUtil.APPID;
-		String APPSECRET = CommonUtil.APPSECRET;
-		String accessToken = CommonUtil.getToken("APPID", "APPSECRET").getAccessToken();
-		WeixinUserList weixinUserList = getUserList(accessToken, "");
-		WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
-		
-		String openid = weixinUserList.getNextOpenId();
-
-//		QRCodeEvent qrCodeEvent = new QRCodeEvent();
-//		qrCodeEvent.getEventKey();
-		System.out.println("openid:"+openid);
-		System.out.println("APPID:"+APPID);
-		System.out.println("APPSECRET:"+APPSECRET);
-		System.out.println("accessToken:"+accessToken);
-		WeixinUserInfo user = AdvancedUtil.getUserInfo(accessToken, openid);
-//		/**
-//		 * ��ȡ��ע���б�
-//		 */
-//		System.out.println("�ܹ�ע�û�����" + weixinUserList.getTotal());
-//		System.out.println("���λ�ȡ�û�����" + weixinUserList.getCount());
-//		System.out.println("OpenID�б�" + weixinUserList.getOpenIdList().toString());
-		System.out.println("next_openid��" + weixinUserList.getNextOpenId());
-//		
-//		/**
-//		 * ��ȡ�û���Ϣ
-//		 */
-		System.out.println("OpenID��" + user.getOpenId());
-//		System.out.println("��ע״̬��" + user.getSubscribe());
-//		System.out.println("��עʱ�䣺" + user.getSubscribeTime());
-//		System.out.println("�ǳƣ�" + user.getNickname());
-//		System.out.println("�Ա�" + user.getSex());
-//		System.out.println("���ң�" + user.getCountry());
-//		System.out.println("ʡ�ݣ�" + user.getProvince());
-//		System.out.println("���У�" + user.getCity());
-//		System.out.println("���ԣ�" + user.getLanguage());
-//		System.out.println("ͷ��" + user.getHeadImgUrl());
-		
-		// ��ȡ�ӿڷ���ƾ֤
-		/**
-		* ���Ϳͷ���Ϣ���ı���Ϣ��
-		*/
-//		// ��װ�ı��ͷ���Ϣ
-//		Scanner scanner = new Scanner(System.in);
-//		
-//		String jsonTextMsg = makeTextCustomMessage("ovNlUwMpA79l2-uDu2MtDuhGr9co", scanner.next());
-//		// ���Ϳͷ���Ϣ
-//		sendCustomMessage(accessToken, jsonTextMsg);
-		/**
-		 * ������ʱ��ά��
-		 */
-//		WeixinCustomer weixinCustomer = new WeixinCustomer();
-//		AdvancedUtil.setCustomerid(accessToken, "zhou504171@gh_d698ab97cae6", "С��", "sssssmd5");
-//		System.out.println("�ͷ�������"+weixinCustomer.getKf_account());
-		
-//		WeixinQRCode weixinQRCode = createTemporaryQRCode(accessToken, 900, 111111);
-//		// ��ʱ��ά���ticket
-//		System.out.println("ticket:"+weixinQRCode.getTicket());
-//		// ��ʱ��ά�����Чʱ��
-//		System.out.println("expireSeconds:"+weixinQRCode.getExpireSeconds());
-		//String Customer1 = AdvancedUtil.setweixincustomer(accessToken, aaa@gh_d698ab97cae6, aaa, aa);
-//		/**
-//		 * ����ticket��ȡ��ά��
-//		 */
-//		String ticket = weixinQRCode.getTicket();
-//		String savePath = "C:/Users/Administrator/Desktop";
-//		// ����ticket��ȡ��ά��
-//		getQRCode(ticket, savePath);
-		/**
-		 * �������ö�ά��**/
-		
-		String ticket = AdvancedUtil.createPermanentQRCode(accessToken,1);
-		System.out.println("ticket:"+ticket);
-//		System.out.println("sceneId"+);
-		String savePath = "C:/Users/Administrator/Desktop";
-		getQRCode(ticket, savePath);
-
-		
-		/**
-		 * �����ͷ�*/
-//		WeixinCustomer weixinCustomer = AdvancedUtil.setweixincustomer(accessToken, "zhou50@gh_d698ab97cae6", "С��", "dddd");
-//		System.out.println("getKf_account"+weixinCustomer.getKf_account());
-	}
+	
 }

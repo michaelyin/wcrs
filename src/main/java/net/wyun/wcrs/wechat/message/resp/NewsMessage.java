@@ -1,4 +1,4 @@
-package com.dongyuan.weixin.message.resp;
+package net.wyun.wcrs.wechat.message.resp;
 
 import java.util.List;
 
