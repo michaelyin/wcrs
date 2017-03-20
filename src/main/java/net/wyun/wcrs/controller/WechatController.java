@@ -123,9 +123,9 @@ public class WechatController {
 							session.setAttribute("openID", openid);
 							//request.getRequestDispatcher("/insertServlet").forward(request, null);
 							//System.out.println(session.getAttribute("openID"));
-							System.out.println(openid);
+							logger.info(openid);
 							//System.out.println("eventKey"+eventKey);
-							System.out.println(eventKey.substring(eventKey.length()-1));
+							logger.info(eventKey.substring(eventKey.length()-1));
 							//获取用户openid等相关信息写入数据库
 							//QRCodeEvent qrCodeEvent = DaoFactory.getPersonDaoInstance().insertByopenid(baseEvent);
 //							QRCodeEvent qrCodeEvent = DaoFactory.getPersonDaoInstance().selectByopenid(baseEvent);
@@ -137,21 +137,21 @@ public class WechatController {
 							if (openid != null) {
 								//根据用户openid查询其他数据
 								//查询openid
-								System.out.println("openid:"+user.getOpenId());
+								logger.info("openid:"+user.getOpenId());
 								//查询昵称
-								System.out.println("nickname:"+user.getNickname());
+								logger.info("nickname:"+user.getNickname());
 								//查询性别
-								System.out.println("sex:"+user.getSex());
+								logger.info("sex:"+user.getSex());
 								//查询语言
-								System.out.println("language:"+user.getLanguage());
+								logger.info("language:"+user.getLanguage());
 								//查询城市
-								System.out.println("city:"+user.getCity());
+								logger.info("city:"+user.getCity());
 								//查询省市
-								System.out.println("province:"+user.getProvince());
+								logger.info("province:"+user.getProvince());
 								//查询国家
-								System.out.println("country:"+user.getCountry());
+								logger.info("country:"+user.getCountry());
 								//查询头像
-								System.out.println("headimgurl:"+user.getHeadImgUrl());
+								logger.info("headimgurl:"+user.getHeadImgUrl());
 								//System.out.println(DaoFactory.getPersonDaoInstance().selectByopenid(qrCodeEvent));
 								//DaoFactory.getPersonDaoInstance().selectByopenid(fromUserName);
 //								if (DaoFactory.getPersonDaoInstance().selectByopenid(openid)) {
@@ -187,11 +187,11 @@ public class WechatController {
 					}
 					else if(eventKey.equals(MessageUtil.EVENT_TYPE_SCAN)){
 						MessageUtil.EVENT_TYPE_SCAN.equals(scan);
-						System.out.println("key"+eventKey);
+						logger.info("key"+eventKey);
 					}
 					// 当用户发消息时
 					else{
-//						System.out.println("获得的信息:"+textMessage2.getContent());
+//						logger.info("获得的信息:"+textMessage2.getContent());
 //						if ("你好".equals(textMessage2.getContent())||"您好".equals(textMessage2.getContent())||"在么".equals(textMessage2.getContent())) {
 //							textMessage.setContent("请稍等，正在为您分配客服人员。。。");
 //							respXml = MessageUtil.messageToXml(textMessage);	
@@ -203,7 +203,7 @@ public class WechatController {
 						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("wechat event handling", e);;
 				}
 				return respXml;
 	}
