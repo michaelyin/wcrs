@@ -48,8 +48,8 @@ public class WechatController {
 	UserRepository userRepo;
 	
 	@RequestMapping(value= "/wechat", method=RequestMethod.POST)
-	String saveUser(@RequestBody String data, HttpServletRequest request){
-		logger.info("wechat data: " + data);
+	String saveUser(/*@RequestBody String data, */ HttpServletRequest request){
+		logger.info("wechat data: ");
 		
 		// xml格式的消息数据
 				String respXml = null;
