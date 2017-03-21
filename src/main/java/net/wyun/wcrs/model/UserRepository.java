@@ -24,4 +24,6 @@ public interface UserRepository extends CrudRepository<User, String>{
 	int removeByCreate_tGreaterThan(@Param("cutOff") Date cutOff);
 	
 	List<User> deleteByCreatetAfter(@Param("cutOff") Date cutOff);
+	
+	User findByOpenID(String openId);
 }
