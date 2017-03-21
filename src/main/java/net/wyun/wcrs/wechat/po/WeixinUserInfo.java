@@ -1,31 +1,31 @@
 package net.wyun.wcrs.wechat.po;
 
 /**
- * ΢���û��Ļ�����Ϣ
+ * 微信用户的基本信息
  * 
  * @author qikuo
  * @date 2017-2-28
  */
 public class WeixinUserInfo {
-	// �û��ı�ʶ
+	// 用户的标识
 	private String openId;
-	// ��ע״̬��1�ǹ�ע��0��δ��ע����δ��עʱ��ȡ����������Ϣ
+	// 关注状态（1是关注，0是未关注），未关注时获取不到其余信息
 	private int subscribe;
-	// �û���עʱ�䣬Ϊʱ���������û�����ι�ע����ȡ����עʱ��
+	// 用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间
 	private String subscribeTime;
-	// �ǳ�
+	// 昵称
 	private String nickname;
-	// �û����Ա�1�����ԣ�2��Ů�ԣ�0��δ֪��
+	// 用户的性别（1是男性，2是女性，0是未知）
 	private int sex;
-	// �û����ڹ���
+	// 用户所在国家
 	private String country;
-	// �û�����ʡ��
+	// 用户所在省份
 	private String province;
-	// �û����ڳ���
+	// 用户所在城市
 	private String city;
-	// �û������ԣ���������Ϊzh_CN
+	// 用户的语言，简体中文为zh_CN
 	private String language;
-	// �û�ͷ��
+	// 用户头像
 	private String headImgUrl;
 
 	public String getOpenId() {
@@ -106,5 +106,16 @@ public class WeixinUserInfo {
 
 	public void setHeadImgUrl(String headImgUrl) {
 		this.headImgUrl = headImgUrl;
+	}
+
+	@Override
+	public String toString() {
+		return "WeixinUserInfo [" + (openId != null ? "openId=" + openId + ", " : "") + "subscribe=" + subscribe + ", "
+				+ (subscribeTime != null ? "subscribeTime=" + subscribeTime + ", " : "")
+				+ (nickname != null ? "nickname=" + nickname + ", " : "") + "sex=" + sex + ", "
+				+ (country != null ? "country=" + country + ", " : "")
+				+ (province != null ? "province=" + province + ", " : "") + (city != null ? "city=" + city + ", " : "")
+				+ (language != null ? "language=" + language + ", " : "")
+				+ (headImgUrl != null ? "headImgUrl=" + headImgUrl : "") + "]";
 	}
 }
