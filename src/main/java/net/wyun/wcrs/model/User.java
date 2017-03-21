@@ -27,7 +27,7 @@ public class User {
 	
 	Gender gender; //sex		
 	String city;		
-	Province province;
+	String province;
 	String country;
 	
 	@Column(name = "head_img_url", nullable = false)
@@ -40,7 +40,22 @@ public class User {
 	//subscribe_time		
 	String ticket;
 	
+	String language;
+	UserStatus status;
 	
+	
+	public UserStatus getStatus() {
+		return status;
+	}
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 	public String getOpenID() {
 		return openID;
 	}
@@ -77,10 +92,10 @@ public class User {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	public Province getProvince() {
+	public String getProvince() {
 		return province;
 	}
-	public void setProvince(Province province) {
+	public void setProvince(String province) {
 		this.province = province;
 	}
 	public String getCountry() {
