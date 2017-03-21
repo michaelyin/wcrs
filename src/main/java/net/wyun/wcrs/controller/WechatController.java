@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import net.wyun.wcrs.jsj.JSJFormInfo;
+import net.wyun.wcrs.model.Gender;
 import net.wyun.wcrs.model.User;
 import net.wyun.wcrs.model.UserRepository;
+import net.wyun.wcrs.model.UserStatus;
 import net.wyun.wcrs.wechat.AdvancedUtil;
 import net.wyun.wcrs.wechat.CommonUtil;
 import net.wyun.wcrs.wechat.MessageUtil;
@@ -132,36 +134,24 @@ public class WechatController {
 							String APPID = CommonUtil.APPID;
 							String APPSECRET = CommonUtil.APPSECRET;
 							String accessToken = CommonUtil.getToken("APPID", "APPSECRET").getAccessToken();
-							WeixinUserInfo user = AdvancedUtil.getUserInfo(accessToken, openid);
+							WeixinUserInfo wx_user = AdvancedUtil.getUserInfo(accessToken, openid);
 							//获取用户openid放入数据库进行判断，如果存在不执行操作，如果不存在，则将用户信息写入数据库
 							if (openid != null) {
 								//根据用户openid查询其他数据
 								//查询openid
-								logger.info("openid:"+user.getOpenId());
-								//查询昵称
-								logger.info("nickname:"+user.getNickname());
-								//查询性别
-								logger.info("sex:"+user.getSex());
-								//查询语言
-								logger.info("language:"+user.getLanguage());
-								//查询城市
-								logger.info("city:"+user.getCity());
-								//查询省市
-								logger.info("province:"+user.getProvince());
-								//查询国家
-								logger.info("country:"+user.getCountry());
-								//查询头像
-								logger.info("headimgurl:"+user.getHeadImgUrl());
-								//System.out.println(DaoFactory.getPersonDaoInstance().selectByopenid(qrCodeEvent));
-								//DaoFactory.getPersonDaoInstance().selectByopenid(fromUserName);
-//								if (DaoFactory.getPersonDaoInstance().selectByopenid(openid)) {
-//									//不执行操作
-//									System.out.println("不执行操作");
-//								}
-//								else {
-//									System.out.println("插入用户成功");
-//									qrCodeEvent = DaoFactory.getPersonDaoInstance().insertByopenid(baseEvent);
-//								}
+								logger.info("openid:"+wx_user.getOpenId());
+								logger.info(wx_user.toString());
+								User temp = userRepo.findByOpenID(wx_user.getOpenId());
+								
+								if(null != temp){
+									temp.setStatus(UserStatus.SUBSCRIBER);
+									temp.setModify_t(new Date());
+									userRepo.save(temp);
+								}else{
+									User user = fromWXUser(wx_user);
+									this.userRepo.save(user);
+								}
+								
 //								if (openid.equals(DaoFactory.getPersonDaoInstance().selectByopenid(openid))) {
 //									//暂不做处理
 //								}else{  
@@ -174,12 +164,14 @@ public class WechatController {
 						// 取消订阅
 						else if (eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {
 							// TODO 暂不做处理
+							logger.info("user unsubsribe");
 						}
 						// 自定义菜单点击事件
 						else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
 							// 事件KEY值，与创建菜单时的key值对应
 							//String eventKey = requestMap.get("EventKey");
 							// 根据key值判断用户点击的按钮
+							logger.info("user clicks menu.");
 							if(eventKey.equals("btn3")){
 								
 							}
@@ -208,6 +200,27 @@ public class WechatController {
 				return respXml;
 	}
 	
+	private User fromWXUser(WeixinUserInfo wx_user) {
+		
+        User o = new User();
+		
+		o.setOpenID(wx_user.getOpenId());
+		o.setSceneID(888);
+		o.setParent(1);
+		o.setNickName(wx_user.getNickname());
+		o.setGender(Gender.gender(wx_user.getSex()));
+		o.setCity(wx_user.getCity());
+		o.setProvince(wx_user.getProvince());
+		o.setCountry(wx_user.getCountry());
+		o.setHeadimgurl(wx_user.getHeadImgUrl());
+		o.setCreatet(new Date());
+		o.setTicket("");
+		o.setStatus(UserStatus.SUBSCRIBER);
+		o.setLanguage(wx_user.getLanguage());
+		
+		return o;
+	}
+
 	@RequestMapping(value= "/wechat", method=RequestMethod.GET)
 	void handShake(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		// 微信加密签名
