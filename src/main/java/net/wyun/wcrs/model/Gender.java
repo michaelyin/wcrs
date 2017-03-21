@@ -11,4 +11,8 @@ package net.wyun.wcrs.model;
  */
 public enum Gender {
      MALE, FEMALE;
+	
+	public static Gender gender(int i){
+		return i==0?Gender.FEMALE:Gender.MALE;
+	 }
 }
