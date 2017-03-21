@@ -17,15 +17,17 @@ use wcrs;
 CREATE TABLE if not exists user_info (
     openid         VARCHAR(36)       primary key NOT NULL,
     scene_id       int               NOT NULL DEFAULT 0,
-    parent         int               NOT NULL DEFAULT 0,
-    nick_name      varchar(40)       NOT NULL,	        #	姓   
+    parent         int               NOT NULL DEFAULT 0,        #   must be a valid scene_id
+    nick_name      varchar(40)       NOT NULL,	                #	姓   
     gender         varchar(6)        NOT NULL DEFAULT 'MALE',	#	性别  //user info.
+    language       varchar(6)        NOT NULL DEFAULT 'cn',
     city           varchar(30)       NOT NULL DEFAULT '',
-    province       int               NOT NULL DEFAULT 999,	
+    province       varchar(30)       NOT NULL DEFAULT '',	
     country        varchar(64)       NOT NULL DEFAULT '',	
     head_img_url   varchar(128)      NOT NULL DEFAULT '',	 
-    create_t       datetime          DEFAULT NULL,	                    #	记录时间
-    modify_t       datetime          DEFAULT NULL,	                    #	记录更新时间
-    ticket         varchar(32)       DEFAULT NULL	        #
+    create_t       datetime          DEFAULT NULL,	            #	记录时间
+    modify_t       datetime          DEFAULT NULL,	            #	记录更新时间
+    status         smallint          NOT NULL DEFAULT 0,
+    ticket         varchar(32)       DEFAULT NULL	            #
 )  DEFAULT CHARSET=utf8;
 
