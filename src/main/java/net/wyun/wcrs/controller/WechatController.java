@@ -139,7 +139,7 @@ public class WechatController {
 							if (openid != null) {
 								//根据用户openid查询其他数据
 								//查询openid
-								logger.info("openid:"+wx_user.getOpenId());
+								logger.info("openid:" + wx_user.getOpenId());
 								logger.info(wx_user.toString());
 								User temp = userRepo.findByOpenID(wx_user.getOpenId());
 								
