@@ -24,11 +24,13 @@ public class UserTest {
 		o.setNickName("test");
 		o.setGender(Gender.MALE);
 		o.setCity("北京");
-		o.setProvince(Province.上海);
+		o.setProvince("上海");
 		o.setCountry("China");
 		o.setHeadimgurl("/head/image/test");
 		o.setCreatet(new Date());
 		o.setTicket("test ticket 1121");
+		o.setStatus(UserStatus.REGISTERED);
+		o.setLanguage("cn");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String r_str = mapper.writeValueAsString(o);

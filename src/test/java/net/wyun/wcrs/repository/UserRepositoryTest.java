@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import net.wyun.wcrs.BaseSpringTestRunner;
 import net.wyun.wcrs.model.UserRepository;
+import net.wyun.wcrs.model.UserStatus;
 import net.wyun.wcrs.model.Gender;
 import net.wyun.wcrs.model.Province;
 import net.wyun.wcrs.model.User;
@@ -23,17 +24,19 @@ public class UserRepositoryTest extends BaseSpringTestRunner {
 	@Test
 	public void saveOCLG(){
 		User o = new User();
-		o.setOpenID("ff8081814da00e2b014da00f32260001");
+		o.setOpenID("ff8081814da00e2b014da00f32260002");
 		o.setSceneID(888);
 		o.setParent(999);
 		o.setNickName("test");
 		o.setGender(Gender.MALE);
+		o.setLanguage("en");
 		o.setCity("北京");
-		o.setProvince(Province.上海);
+		o.setProvince("上海");
 		o.setCountry("China");
 		o.setHeadimgurl("/head/image/test");
 		o.setCreatet(new Date());
 		o.setTicket("test ticket 1121");
+		o.setStatus(UserStatus.REGISTERED);
 		userRepository.save(o);
 		
 	}
