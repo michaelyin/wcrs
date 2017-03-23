@@ -31,3 +31,16 @@ CREATE TABLE if not exists user_info (
     ticket         varchar(32)       DEFAULT NULL	            #
 )  DEFAULT CHARSET=utf8;
 
+###############################################################
+# wc_event
+###############################################################
+CREATE TABLE if not exists wc_event (
+    id              int unsigned       NOT NULL auto_increment primary key,
+    to_user_name    varchar(30)        NOT NULL DEFAULT '',
+    from_user_name  varchar(30)        NOT NULL DEFAULT '',
+    msg_type        varchar(20)        NOT NULL DEFAULT '',
+    event           varchar(20)        NOT NULL DEFAULT '',
+    event_key       varchar(20)        NOT NULL DEFAULT '',
+    create_t        datetime           DEFAULT NULL	            #	记录时间
+)  DEFAULT CHARSET=utf8;
+
