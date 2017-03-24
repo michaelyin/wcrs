@@ -27,7 +27,7 @@ public interface UserRepository extends CrudRepository<User, String>{
 	
 	User findByOpenID(String openId);
 	
-	@Query("select coalesce(max(o.sceneID), '0') from User o")
+	@Query("select coalesce(max(o.sceneID), '1') from User o")
 	int findMaxSceneID();
 	
 	
