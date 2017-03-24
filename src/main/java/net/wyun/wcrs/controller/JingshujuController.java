@@ -19,6 +19,8 @@ import net.wyun.wcrs.jsj.JSJFormInfo;
 import net.wyun.wcrs.model.User;
 import net.wyun.wcrs.model.UserRepository;
 import net.wyun.wcrs.model.UserStatus;
+import net.wyun.wcrs.service.JinShuJuHandler;
+import net.wyun.wcrs.service.SceneIdService;
 
 /**
  * @author Xuecheng
@@ -32,22 +34,20 @@ public class JingshujuController {
 	private static final Logger logger = LoggerFactory.getLogger(JingshujuController.class);
 	
 	@Autowired
-	UserRepository userRepo;
+	JinShuJuHandler handler;
 	
 	@CrossOrigin
 	@RequestMapping(value= "/jsj", method=RequestMethod.POST)
-	String saveUser(@RequestBody JSJFormInfo data){
+	String regiesterUser(@RequestBody JSJFormInfo data){
 		logger.info("jingshuju data: " + data.getFormName() + data.getEntry());
 		
 		String oid = data.getEntry().getXFieldWeixinOpenid();
-		User u = userRepo.findByOpenID(oid);
-		if(null == u){
-			throw new RuntimeException("user not exist for oid: " + oid);
-		}
-		u.setStatus(UserStatus.REGISTERED);
-		u.setModify_t(new Date());
-		userRepo.save(u);
+		handler.handle(oid);
+		
 		return oid;
 	}
+	
+	
+	
 
 }
