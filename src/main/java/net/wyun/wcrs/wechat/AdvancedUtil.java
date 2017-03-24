@@ -97,6 +97,8 @@ public class AdvancedUtil {
 		return weixinQRCode;
 	}
 
+	
+	private final static String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN";
 	/**
 	 * 创建永久带参二维码
 	 * 
@@ -107,8 +109,8 @@ public class AdvancedUtil {
 	public static String createPermanentQRCode(String accessToken, int sceneId) {
 		String ticket = null;
 		// 拼接请求地址
-		String requestUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN";
-		requestUrl = requestUrl.replace("ACCESS_TOKEN", accessToken);
+		//String requestUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=ACCESS_TOKEN";
+		String requestUrl = ACCESS_TOKEN_URL.replace("ACCESS_TOKEN", accessToken);
 		// 需要提交的json数据
 		String jsonMsg = "{\"action_name\": \"QR_LIMIT_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": %d}}}";
 		// 创建永久带参二维码
@@ -118,7 +120,7 @@ public class AdvancedUtil {
 			try {
 				ticket = jsonObject.getString("ticket");
 		
-				log.info("创建永久带参二维码成功 ticket:{}", ticket);
+				log.info("创建永久带参二维码成功 (QR code creation successful) ticket:{}", ticket);
 				
 				
 			} catch (Exception e) {
