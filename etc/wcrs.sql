@@ -28,7 +28,7 @@ CREATE TABLE if not exists user_info (
     create_t       datetime          DEFAULT NULL,	            #	记录时间
     modify_t       datetime          DEFAULT NULL,	            #	记录更新时间
     status         smallint          NOT NULL DEFAULT 0,
-    ticket         varchar(32)       DEFAULT NULL	            #
+    ticket         varchar(100)       DEFAULT NULL	            #
 )  DEFAULT CHARSET=utf8;
 
 ###############################################################
