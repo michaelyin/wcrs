@@ -26,4 +26,9 @@ public interface UserRepository extends CrudRepository<User, String>{
 	List<User> deleteByCreatetAfter(@Param("cutOff") Date cutOff);
 	
 	User findByOpenID(String openId);
+	
+	@Query("select coalesce(max(o.sceneID), '0') from User o")
+	int findMaxSceneID();
+	
+	
 }
