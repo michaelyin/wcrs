@@ -113,10 +113,19 @@ public class WechatController {
 								
 								if(null != temp){
 									temp.setStatus(UserStatus.SUBSCRIBER);
+									if(!wevt.getEventKey().isEmpty()){
+										int parent = Integer.parseInt(wevt.getEventKey());
+										temp.setParent(parent);
+									}
 									temp.setModify_t(new Date());
 									userRepo.save(temp);
 								}else{
 									User user = fromWXUser(wx_user);
+									int parent = 1;  //default platform QR
+									if(!wevt.getEventKey().isEmpty()){
+										parent = Integer.parseInt(wevt.getEventKey());
+									}
+									user.setParent(parent);
 									this.userRepo.save(user);
 								}
 								
@@ -193,8 +202,8 @@ public class WechatController {
         User o = new User();
 		
 		o.setOpenID(wx_user.getOpenId());
-		o.setSceneID(888);
-		o.setParent(1);
+		o.setSceneID(0);
+		o.setParent(0);
 		o.setNickName(wx_user.getNickname());
 		o.setGender(Gender.gender(wx_user.getSex()));
 		o.setCity(wx_user.getCity());
