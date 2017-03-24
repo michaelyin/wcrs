@@ -25,8 +25,8 @@ public class UserRepositoryTest extends BaseSpringTestRunner {
 	public void saveOCLG(){
 		User o = new User();
 		o.setOpenID("ff8081814da00e2b014da00f32260002");
-		o.setSceneID(888);
-		o.setParent(999);
+		o.setSceneID(0);
+		o.setParent(1);
 		o.setNickName("test");
 		o.setGender(Gender.MALE);
 		o.setLanguage("en");
