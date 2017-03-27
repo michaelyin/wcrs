@@ -65,6 +65,7 @@ public class WechatController {
 					Map<String, String> requestMap = MessageUtil.parseXml(request);
 					WechatEvent wevt = event(requestMap);
 					String eventKey = wevt.getEventKey();
+					
 					QRCodeEvent baseEvent = new QRCodeEvent();
 					RespTextMessage textMessage = new RespTextMessage();
 					ReqTextMessage textMessage2 = new ReqTextMessage();
@@ -114,7 +115,7 @@ public class WechatController {
 								if(null != temp){
 									temp.setStatus(UserStatus.SUBSCRIBER);
 									if(!wevt.getEventKey().isEmpty()){
-										int parent = Integer.parseInt(wevt.getEventKey());
+										int parent = MessageUtil.parseEventKey(wevt.getEventKey());
 										temp.setParent(parent);
 									}
 									temp.setModify_t(new Date());
@@ -123,7 +124,7 @@ public class WechatController {
 									User user = fromWXUser(wx_user);
 									int parent = 1;  //default platform QR
 									if(!wevt.getEventKey().isEmpty()){
-										parent = Integer.parseInt(wevt.getEventKey());
+										parent = MessageUtil.parseEventKey(wevt.getEventKey());
 									}
 									user.setParent(parent);
 									this.userRepo.save(user);
@@ -177,6 +178,7 @@ public class WechatController {
 				return respXml;
 	}
 	
+	
 	private WechatEvent event(Map<String, String> requestMap) {
 
 		// 发送方帐号
@@ -194,7 +196,8 @@ public class WechatController {
 		//扫描事件
 		//String scan = requestMap.get("scan");
 		
-		return new WechatEvent(toUserName, fromUserName, msgType, event, eventKey);
+		WechatEvent evt = new WechatEvent(toUserName, fromUserName, msgType, event, eventKey);
+		return evt;
 	}
 
 	private User fromWXUser(WeixinUserInfo wx_user) {

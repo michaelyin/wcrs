@@ -28,7 +28,7 @@ public class WechatEvent {
 		this.fromUserName = fromUserName;
 		this.msgType = msgType;
 		this.event = event;
-		this.eventKey = eventKey;
+		this.eventKey = trimEventKey(eventKey);;
 		this.create_t = new Date();
 	}
 
@@ -62,7 +62,7 @@ public class WechatEvent {
 	
     private String event;
     
-    @Column(name = "event_key")
+    @Column(name = "event_key", length=100)
     private String eventKey;
 
 	public String getToUserName() {
@@ -108,9 +108,24 @@ public class WechatEvent {
 	public String getEventKey() {
 		return eventKey;
 	}
+	
+	private String trimEventKey(String eventKey){
+		try {
+	        int size = getClass().getDeclaredField("eventKey").getAnnotation(Column.class).length();
+	        int inLength = eventKey.length();
+	        if (inLength>size)
+	        {
+	        	eventKey = eventKey.substring(0, size);
+	        }
+	    } catch (NoSuchFieldException ex) {
+	    } catch (SecurityException ex) {
+	    }
+		return eventKey;
+	}
 
 	public void setEventKey(String eventKey) {
-		this.eventKey = eventKey;
+		
+		this.eventKey = trimEventKey(eventKey);;
 	}
     
 }

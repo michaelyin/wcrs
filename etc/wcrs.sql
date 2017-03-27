@@ -40,7 +40,7 @@ CREATE TABLE if not exists wc_event (
     from_user_name  varchar(30)        NOT NULL DEFAULT '',
     msg_type        varchar(20)        NOT NULL DEFAULT '',
     event           varchar(20)        NOT NULL DEFAULT '',
-    event_key       varchar(20)        NOT NULL DEFAULT '',
+    event_key       varchar(100)        NOT NULL DEFAULT '',
     create_t        datetime           DEFAULT NULL	            #	记录时间
 )  DEFAULT CHARSET=utf8;
 
