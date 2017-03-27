@@ -27,7 +27,7 @@ import net.wyun.wcrs.wechat.message.resp.NewsMessage;
 import net.wyun.wcrs.wechat.message.resp.RespTextMessage;
 
 public class MessageUtil {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(MessageUtil.class);
 	// 请求消息类型：文本
 	public static final String REQ_MESSAGE_TYPE_TEXT = "text";
@@ -65,95 +65,111 @@ public class MessageUtil {
 	public static final String RESP_MESSAGE_TYPE_MUSIC = "music";
 	// 响应消息类型：图文
 	public static final String RESP_MESSAGE_TYPE_NEWS = "news";
-/**
- * 解析微信发来的请求（XML）
- * 
- * @param request
- * @return Map<String, String>
- * @throws Exception
- */
-@SuppressWarnings("unchecked")
-public static Map<String, String> parseXml(HttpServletRequest request) throws Exception {
-	// 将解析结果存储在HashMap中
-	Map<String, String> map = new HashMap<String, String>();
 
-	// 从request中取得输入流
-	InputStream inputStream = request.getInputStream();
-	// 读取输入流
-	SAXReader reader = new SAXReader();
-	Document document = reader.read(inputStream);
-	// 得到xml根元素
-	Element root = document.getRootElement();
-	// 得到根元素的所有子节点
-	List<Element> elementList = root.elements();
+	/**
+	 * 解析微信发来的请求（XML）
+	 * 
+	 * @param request
+	 * @return Map<String, String>
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, String> parseXml(HttpServletRequest request) throws Exception {
+		// 将解析结果存储在HashMap中
+		Map<String, String> map = new HashMap<String, String>();
 
-	// 遍历所有子节点
-	for (Element e : elementList){
-		logger.debug(e.getName() + " : " + e.getText());
-		map.put(e.getName(), e.getText());
+		// 从request中取得输入流
+		InputStream inputStream = request.getInputStream();
+		// 读取输入流
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(inputStream);
+		// 得到xml根元素
+		Element root = document.getRootElement();
+		// 得到根元素的所有子节点
+		List<Element> elementList = root.elements();
+
+		// 遍历所有子节点
+		for (Element e : elementList) {
+			logger.debug(e.getName() + " : " + e.getText());
+			map.put(e.getName(), e.getText());
+		}
+
+		// 释放资源
+		inputStream.close();
+		inputStream = null;
+
+		return map;
 	}
-		
 
-	// 释放资源
-	inputStream.close();
-	inputStream = null;
+	/**
+	 * 扩展xstream使其支持CDATA
+	 */
+	private static XStream xstream = new XStream(new XppDriver() {
+		public HierarchicalStreamWriter createWriter(Writer out) {
+			return new PrettyPrintWriter(out) {
+				// 对所有xml节点的转换都增加CDATA标记
+				boolean cdata = true;
 
-	return map;
-}
-
-/**
- * 扩展xstream使其支持CDATA
- */
-private static XStream xstream = new XStream(new XppDriver() {
-	public HierarchicalStreamWriter createWriter(Writer out) {
-		return new PrettyPrintWriter(out) {
-			// 对所有xml节点的转换都增加CDATA标记
-			boolean cdata = true;
-
-			@SuppressWarnings("unchecked")
-			public void startNode(String name, Class clazz) {
-				super.startNode(name, clazz);
-			}
-
-			protected void writeText(QuickWriter writer, String text) {
-				if (cdata) {
-					writer.write("<![CDATA[");
-					writer.write(text);
-					writer.write("]]>");
-				} else {
-					writer.write(text);
+				@SuppressWarnings("unchecked")
+				public void startNode(String name, Class clazz) {
+					super.startNode(name, clazz);
 				}
-			}
-		};
+
+				protected void writeText(QuickWriter writer, String text) {
+					if (cdata) {
+						writer.write("<![CDATA[");
+						writer.write(text);
+						writer.write("]]>");
+					} else {
+						writer.write(text);
+					}
+				}
+			};
+		}
+	});
+
+	/**
+	 * 文本消息对象转换成xml
+	 * 
+	 * @param textMessage
+	 *            文本消息对象
+	 * @return xml
+	 */
+	public static String messageToXml(RespTextMessage textMessage) {
+		xstream.alias("xml", textMessage.getClass());
+		return xstream.toXML(textMessage);
 	}
-});
-/**
- * 文本消息对象转换成xml
- * 
- * @param textMessage 文本消息对象
- * @return xml
- */
-public static String messageToXml(RespTextMessage textMessage) {
-	xstream.alias("xml", textMessage.getClass());
-	return xstream.toXML(textMessage);
-}
-public static String messageToXml(QRCodeEvent text) {
-	xstream.alias("xml", text.getClass());
-	return xstream.toXML(text);
-}
-public static String messageToXml(NewsMessage newsMessage) {
-	xstream.alias("xml", newsMessage.getClass());
-	xstream.alias("item", new Article().getClass());
-	return xstream.toXML(newsMessage);
-}
-public static String initText(String toUserName,String fromUserName,Long createTime,String msgType,String event,String sceneId,String ticket){
-	QRCodeEvent text = new QRCodeEvent();
-	text.setFromUserName(toUserName);
-	text.setToUserName(fromUserName);
-	text.setMsgType(MessageUtil.REQ_MESSAGE_TYPE_TEXT);
-	text.setCreateTime(new Date().getTime());
-	text.setEvent(event);
-	text.setEventKey(sceneId);
-	return messageToXml(text);
-}
+
+	public static String messageToXml(QRCodeEvent text) {
+		xstream.alias("xml", text.getClass());
+		return xstream.toXML(text);
+	}
+
+	public static String messageToXml(NewsMessage newsMessage) {
+		xstream.alias("xml", newsMessage.getClass());
+		xstream.alias("item", new Article().getClass());
+		return xstream.toXML(newsMessage);
+	}
+
+	public static String initText(String toUserName, String fromUserName, Long createTime, String msgType, String event,
+			String sceneId, String ticket) {
+		QRCodeEvent text = new QRCodeEvent();
+		text.setFromUserName(toUserName);
+		text.setToUserName(fromUserName);
+		text.setMsgType(MessageUtil.REQ_MESSAGE_TYPE_TEXT);
+		text.setCreateTime(new Date().getTime());
+		text.setEvent(event);
+		text.setEventKey(sceneId);
+		return messageToXml(text);
+	}
+	/**
+	 * Ex. qrscene_2 ==> qrscene, 2, ==> return 2
+	 * @param evtKey
+	 * @return
+	 */
+	public static int parseEventKey(String evtKey){
+		String[] sArr = evtKey.split("_");
+		int parent = Integer.parseInt(sArr[1]);
+		return parent;
+	}
 }
